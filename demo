@@ -1,0 +1,110 @@
+
+<!-- HTML --> 
+
+<mbsc-datepicker (ngModelChange)="modelChangeFn($event)"  themeVariant="light" [(ngModel)]="todayVal" formControlName="tourdatetimedetails" display="inline" minTime="9:00" maxTime="16:59" [stepMinute]="15" [stepHour]="0" [touchUi]="true" [controls]="['calendar', 'timegrid']" [selectMultiple]="false" [defaultSelection]="shownextday" [min]="shownextday" [calendarHeaderTemplate]="calendarHeader"> 
+      <ng-template #calendarHeader>
+
+        <mbsc-calendar-nav style="pointer-events: none;"></mbsc-calendar-nav>
+        <div class="custom-buttons" style="max-width: 115px; display: flex; justify-content: flex-end; flex-direction: row; align-content: center; align-items: center; padding-bottom:3px">
+            <mbsc-calendar-prev></mbsc-calendar-prev>
+            <button (click)="setToday()" [disabled] = "todaydisabled()" style="background: none; border: none; color: #0072a3; font-size: 18px; cursor: pointer; padding-top:4px">Today</button>
+            <mbsc-calendar-next></mbsc-calendar-next>
+          </div>
+
+    </ng-template>
+</mbsc-datepicker>
+
+
+<!-- APP.MODULE.TS --> 
+
+import { MbscModule } from '@mobiscroll/angular';
+
+....
+@NgModule({
+imports: [ 
+    MbscModule, 
+    
+    ...]})
+    
+    
+
+<!-- APP.COMPONENT.TS --> 
+  
+ import { MbscCalendarEvent, MbscEventcalendarOptions, MbscEventcalendarView } from '@mobiscroll/angular/dist/js/core/components/eventcalendar/eventcalendar';  
+   
+   bar = new Date();
+
+  modelChangeFn(e: any) {
+    this.bar = e;
+  }
+  todayVal!: Date;
+  
+  .....
+    
+    
+    let getRoundedDate = (minutes: number, d=new Date()) => {
+
+  let ms = 1000 * 60 * minutes; 
+  let roundedDate = new Date(Math.round(d.getTime() / ms) * ms);
+
+  return roundedDate
+};
+
+const presentrounded = getRoundedDate(15, new Date());
+
+
+
+const presenttime = formatDate(now, 'HHmm', 'en-US');
+
+
+const presenttimenumber: number = +presenttime
+
+
+const ceilingtimenumber = 1629
+
+
+let afterhours = function(presenttimenumber: number, ceilingtimenumber: number): Date {
+
+  
+  let now = new Date();
+  const presentrounded = getRoundedDate(15, new Date());
+  let shownextday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
+
+if (presenttimenumber > ceilingtimenumber) {return shownextday}
+  
+return presentrounded
+}
+
+
+...
+
+setToday() {
+    this.todayVal = new Date();
+}
+
+const shownextday = afterhours(presenttimenumber, ceilingtimenumber)
+    
+<!-- APP.MODULE.TS --> 
+
+bar = new Date();
+
+  modelChangeFn(e: any) {
+    this.bar = e;
+  }
+  
+  
+  todaydisabled() {
+
+  if (presenttimenumber > ceilingtimenumber)
+
+  {return true}
+
+  else {return false}
+
+}
+  
+  ....
+
+
+
+
